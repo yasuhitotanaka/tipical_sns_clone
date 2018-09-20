@@ -27,12 +27,30 @@ class User {
     return $row['first_name'] . " " . $row['last_name'];
   }
 
+  public function get_profile_picture() {
+    $username = $this->user['username'];
+    $query = mysqli_query($this->connection, "SELECT profile_picture FROM users WHERE username='$username'");
+    $row = mysqli_fetch_array($query);
+    return $row['profile_picture'];
+  }
+
   public function is_closed() {
     $username = $this->user['username'];
     $query = mysqli_query($this->connection, "SELECT user_closed FROM users WHERE username='$username'");
     $row = mysqli_fetch_array($query);
 
     return ($row['user_closed'] == 'yes') ? true : false;
+  }
+
+  public function is_friend($username_to_check) {
+    $username_comma = "," . $username_to_check . ",";
+    // find specified username
+    if (strstr($this->user['friend_array'], $username_comma)
+      || $username_to_check == $this->user['username'] ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

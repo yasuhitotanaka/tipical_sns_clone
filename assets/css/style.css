@@ -13,6 +13,12 @@ body {
   padding: 0;
   line-height: 17px;
   background-color: #e6eae8;
+  size: 12px;
+}
+
+a {
+  color: #337ab7;
+  text-decoration: none;
 }
 
 .top_var {
@@ -157,4 +163,45 @@ textarea:focus {
 
 .noMorePosts p {
   text-align: center;
+}
+
+.post_comment {
+  display: none;
+}
+
+#comment_iframe {
+  max-height: 250px;
+  width: 100%;
+  border: none;
+}
+
+.comment_section {
+  padding: 0 5px 5px 5px;
+  font-size: 12px;
+}
+
+.comment_section img {
+  margin: 0 10px 3px 3px;
+  border-radius: 3px;
+}
+
+#comment_form textarea {
+  border-color: #d3d3d3;
+  width: 85%;
+  height: 35px;
+  border-radius: 5px;
+  color: #616060;
+  font-size: 14px;
+  margin: 12px 5px 15px 10px;
+}
+
+#comment_form input[type="submit"] {
+  border: none;
+  background-color: #20aae5;
+  color: #156588;
+  border-radius: 5px;
+  width: 10%;
+  height: 35px;
+  margin-top: 16px;
+  position: absolute;
 }
