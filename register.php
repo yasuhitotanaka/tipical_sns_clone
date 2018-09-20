@@ -1,6 +1,6 @@
 <?php
 require 'settings/config.php';
-include("classes/Constants.php");
+include("includes/classes/Constants.php");
 include("includes/form_handlers/register_handler.php");
 include("includes/form_handlers/login_handler.php");
 

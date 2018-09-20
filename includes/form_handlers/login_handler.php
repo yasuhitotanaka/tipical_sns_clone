@@ -1,5 +1,5 @@
 <?php
-$unique = 1;
+$UNIQUE = 1;
 
 if (isset($_POST['login_button'])) {
   $email = filter_var($_POST['login_email'], FILTER_SANITIZE_EMAIL);
@@ -9,11 +9,11 @@ if (isset($_POST['login_button'])) {
   $check_username_and_passowrd = mysqli_query($connection, "SELECT * FROM users WHERE email='$email' AND password='$encrypted_password'");
   $check_login = mysqli_num_rows($check_username_and_passowrd);
 
-  if($check_login == $unique) {
+  if($check_login == $UNIQUE) {
     $row = mysqli_fetch_array($check_username_and_passowrd);
 
     $user_closed_query = mysqli_query($connection, "SELECT * FROM users WHERE email='$email' AND user_closed='yes'");
-    if(mysqli_num_rows($user_closed_query) == $unique) {
+    if(mysqli_num_rows($user_closed_query) == $UNIQUE) {
       $reopen_accout = mysqli_query($connection, "UPDATE users SET user_closed='no' WHERE email='$email'");
     }
 

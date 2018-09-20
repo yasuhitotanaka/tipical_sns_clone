@@ -2,9 +2,8 @@
 
 if(isset($_SESSION['username'])){
   $userLoggedIn = $_SESSION['username'];
-  $user_details_query = mysqli_query($connection, "SELECT first_name FROM users WHERE username='$userLoggedIn'");
+  $user_details_query = mysqli_query($connection, "SELECT last_name, first_name, profile_picture, number_posts, number_likes FROM users WHERE username='$userLoggedIn'");
   $row = mysqli_fetch_array($user_details_query);
-  $firstname = $row['first_name'];
 } else {
   header("Location: register.php");
 }
@@ -33,7 +32,7 @@ if(isset($_SESSION['username'])){
       </div>
       <nav>
         <a href="#">
-          <?php echo $firstname; ?>
+          <?php echo $row['first_name']; ?>
         </a>
         <a href="index.php">
           <i class="fa fa-home fa-lg"></i>
@@ -49,6 +48,9 @@ if(isset($_SESSION['username'])){
         </a>
         <a href="#">
           <i class="fa fa-cog fa-lg"></i>
+        </a>
+        <a href="includes/handlers/logout.php">
+          <i class="fa fa-sign-out-alt fa-lg"></i>
         </a>
       </nav>
     </div>
