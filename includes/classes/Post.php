@@ -52,13 +52,14 @@ class Post {
         $id = $row['id'];
         $added_by = $row['added_by'];
         $body = $row['body'];
+        $user_to = $row['user_to'];
 
         if($row['user_to'] == "none") {
           $user_to = "";
         } else {
           $user_to_object = new User($this->connection, $user_to);
-          $user_to_name = $user_to_object->getget_first_and_lastname();
-          $user_to = "<a href='" . $row['user_to'] . "'>" . $user_to_name . "</a>";
+          $user_to_name = $user_to_object->get_first_and_lastname();
+          $user_to = "to <a href='" . $user_to . "'>" . $user_to_name . "</a>";
         }
 
         $added_by_object = new User($this->connection, $row['added_by']);
@@ -69,6 +70,13 @@ class Post {
 
           if ($num_iterations++ < $start) continue;
           if ($count > $limit) break; else $count++;
+
+          if ($userLoggedIn == $added_by) {
+            $delete_button =
+              "<buttton class='delete_button btn-danger' id='post$id'>X</button>";
+          } else {
+            $delete_button = "";
+          }
 
           $user_details_query = mysqli_query($this->connection, "SELECT first_name, last_name, profile_picture FROM users WHERE username='$added_by'");
           $user_row = mysqli_fetch_array($user_details_query);
@@ -160,6 +168,7 @@ class Post {
                   <div class='posted_by'>
                     <a href='$added_by'> $first_name $last_name </a> $user_to &nbsp;&nbsp;&nbsp;&nbsp;
                     $time_message
+                    $delete_button
                   </div>
                   <div id='post_body'>
                     $body
@@ -179,6 +188,18 @@ class Post {
                 </div>
                 <hr>";
         }
+    ?>
+    <script>
+      $(document).ready(function(){
+        $('#post<?php echo $id; ?>').on('click', function(){
+          bootbox.confirm("Are you sure you want to delete this post?", function(result){
+            $.post("includes/form_handelers/delete_post.php?post_id=<?php echo $id; ?>", {result: result});
+            if (result) location.reload();
+          })
+        });
+      })
+    </script>
+    <?php
       } // End while loop
         if($count > $limit) {
           $str .= "<input type='hidden' class='nextPage' value='" . ($page + 1) . "'>
