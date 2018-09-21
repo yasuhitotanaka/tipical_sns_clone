@@ -205,3 +205,37 @@ textarea:focus {
   margin-top: 16px;
   position: absolute;
 }
+
+.newsfeedPostOptions {
+  padding: 0px;
+  text-decoration: none;
+  color: #20aae5;
+  border: none;
+}
+
+.newsfeedPostOptions iframe {
+  border: 0px;
+  height: 17px;
+  width: 120px;
+}
+
+.newsfeedPostOptions form {
+  position: absolute;
+  top: 0;
+}
+
+.comment_like {
+  background-color: transparent;
+  border: none;
+  font-size: 14px;
+  color: #3498db;
+  padding: 0;
+  height: auto;
+  width: auto;
+}
+
+.like_value {
+  display: inline;
+  font-size: 14px;
+
+}

@@ -78,23 +78,32 @@ class Post {
           ?>
 
           <script>
-            function toggle<?php echo $id; ?>() {
-              var element = document.getElementById("toggleComment<?php echo $id; ?>");
+            // load css in each iframes
+            $('iframe').on('load', function() {
+              $('iframe').contents().find("head")
+              .append('<link rel="stylesheet" href="assets/css/style.css">');
+            });
 
-              if(element.style.display == "block") {
-                element.style.display = "none";
-              } else {
-                element.style.display = "block";
+            function toggle<?php echo $id; ?>() {
+              let target = $(event.target);
+
+              if(!target.is("a")) {
+                let element = document.getElementById("toggleComment<?php echo $id; ?>");
+
+                if(element.style.display == "block") {
+                  element.style.display = "none";
+                } else {
+                  element.style.display = "block";
+                }
               }
             }
-            $(function(){
-               $('#comment_iframe').on('load', function(){
-                   $('#comment_iframe').contents().find('head').append('<link rel="stylesheet" href="assets/css/style.css">');
-               });
-           });
           </script>
 
           <?php
+
+          $comments_check = mysqli_query($this->connection, "SELECT * FROM comments WHERE post_id='$id'");
+          $comments_check_num = mysqli_num_rows($comments_check);
+
           $date_time_now = date("Y-m-d H:i:s");
           $start_date = new DateTime($row['date_added']);
           $end_date =  new DateTime($date_time_now);
@@ -153,8 +162,17 @@ class Post {
                     $time_message
                   </div>
                   <div id='post_body'>
-                    $body<br>
+                    $body
+                    <br>
+                    <br>
+                    <br>
                   </div>
+
+                  <div class='newsfeedPostOptions'>
+                    Comments($comments_check_num)&nbsp;&nbsp;&nbsp;
+                    <iframe src='like.php?post_id=$id' scrolling='no'></iframe>
+                  </div>
+
                 </div>
                 <div class='post_comment' id='toggleComment$id'>
                   <iframe src='comment_frame.php?post_id=$id' id='comment_iframe'></iframe>
