@@ -3,6 +3,7 @@
   include("includes/header.php");
   include("includes/classes/User.php");
   include("includes/classes/Post.php");
+  include("includes/classes/Message.php");
 
   if(isset($_GET['profile_username'])) {
     $username = $_GET['profile_username'];
@@ -77,9 +78,59 @@
     </div>
 
     <div class="profile_main_column column">
-      <div class="posts_area"></div>
-      <img id="loading" src="assets/images/icons/loading.gif" alt="">
-    </div>
+
+      <ul class="nav nav-tabs" role="tablist" id="profile_tabs">
+        <li role="presentation" class="active">
+          <a href="#newsfeed_div" aria-controls="newsfeed_div" role="tab" data-toggle="tab">
+            News
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="#about_div" aria-controls="about_div" role="tab" data-toggle="tab">
+            Profile
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="#messages_div" aria-controls="messages_div" role="tab" data-toggle="tab">
+            Messages
+          </a>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane fade in active" id="newsfeed_div">
+        </div>
+
+        <div role="tabpanel" class="tab-pane fade in active" id="about_div">
+        </div>
+
+        <div role="tabpanel" class="tab-pane fade in active" id="messages_div">
+          <?php
+              $message_object = new Message($connection, $userLoggedIn);
+              echo "<h4>You and <a href='" . $username . "'>"
+               . $profile_user_object->get_first_and_lastname() .
+               "</a></h4>
+               <hr>
+               <br>";
+              echo "<div class='loaded_messages' id='scroll_messages'>";
+              echo $message_object->get_messages($username);
+              echo "</div>";
+           ?>
+           <div class="messages_post">
+             <form action="" method="POST">
+              <textarea name='message_body' id='message_textarea' placeholder='Write your message ...'></textarea>
+              <input type='submit' name='post_message' class='info' id='message_submit' value='Send'>
+             </form>
+           </div>
+
+           <script>
+            let div = document.getElementById("scroll_messages");
+            div.scrolltop = div.scrollHeight;
+           </script>
+        </div>
+
+      </div>
 
     <!-- Modal -->
     <div class="modal fade" id="post_form" tabindex="-1" role="dialog" aria-labelledby="postModalLabel" aria-hidden="true">

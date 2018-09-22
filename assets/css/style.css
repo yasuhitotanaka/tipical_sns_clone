@@ -101,7 +101,7 @@ nav a:hover {
   float: right;
   width: 70%;
   z-index: -1;
-  min-height: 160px;
+  min-height: 170px;
 }
 
 .post_form {
@@ -204,6 +204,7 @@ textarea:focus {
   height: 35px;
   margin-top: 16px;
   position: absolute;
+  text-shadow: #7386e2 0.5px 0.5px 0;
 }
 
 .newsfeedPostOptions {
@@ -335,4 +336,123 @@ textarea:focus {
 
 .profile_info_bottom {
   margin: 10px 0 0 7px;
+}
+
+#message_textarea {
+  width: 80%;
+  margin-right: 8px;
+  border-radius: 5px;
+  border: 1px solid #d3d3d3;
+  font-size: 12px;
+}
+
+#message_submit {
+  height: 40px;
+  width: 120px;
+  margin: 0;
+  position: absolute;
+  border: none;
+  background-color: #20aae5;
+  color: #156588;
+  border-radius: 5px;
+  text-shadow: #7386e2 0.5px 0.5px 0;
+}
+
+.message {
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 5px 10px;
+  display: inline-block;
+  color: #fff;
+}
+
+.message#blue{
+  background-color: #3498db;
+  border-color: #2980b9;
+  float: right;
+  margin: 0 5px 5px 0;
+}
+
+.message#green{
+  background-color: #2ecc71;
+  border-color: #27aa60;
+  float: left;
+  margin: 0 0 5px 5px;
+}
+
+.loaded_messages {
+  height: 65%;
+  min-height: 300px;
+  max-height: 400px;
+  overflow-y: scroll;
+  margin-bottom: 10px;
+}
+
+.user_found_messages img {
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.user_found_messages p {
+  margin: 0;
+}
+
+.loaded_conversations {
+  max-height: 200px;
+  overflow: scroll;
+}
+
+.user_found_messages {
+  border-bottom: 1px solid #d3d3d3;
+  padding: 8px 8px 10px 8px;
+}
+
+.user_found_messages:hover {
+  background-color: #d3d3d3;
+}
+
+.user_found_messages img {
+  height: 35px;
+  float: left;
+}
+
+#grey {
+  color: #8c8c8c;
+}
+
+.result_display {
+  padding: 5px 5px 0 5px;
+  height: 60px;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.result_display a {
+  color: #000;
+  float: none;
+}
+
+.result_display:hover {
+  background-color: #ebebeb;
+  text-decoration: none;
+}
+
+.live_search_profile_picture img {
+  height: 50px;
+  border-radius: 25px;
+  margin: 1px 12px 0 2px;
+  float: left;
+}
+
+.live_search_text {
+  background-color: transparent;
+  color: #1e96ca;
+}
+
+.live_search_text p:first-child {
+  margin: 0;
+}
+
+.live_search_text p {
+  margin-left: 10px;
+  font-size: 12px;
 }

@@ -14,3 +14,11 @@ $(document).ready(function(){
     });
   });
 });
+
+function getUsers(value, user) {
+  $.post("includes/handlers/ajax/friend_search.php",
+        {query:value, userLoggedIn:user},
+        function(data){
+          $(".results").html(data);
+        });
+}

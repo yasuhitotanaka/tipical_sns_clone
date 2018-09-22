@@ -1,5 +1,4 @@
 <?php
-  require 'settings/config.php';
   include("includes/header.php");
 
 ?>
