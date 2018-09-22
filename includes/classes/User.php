@@ -90,6 +90,25 @@ class User {
     return $row['friend_array'];
   }
 
+  public function get_mutual_friends($user_to_check) {
+    $mutual_friends = 0;
+    $user_array = $this->user['friend_array'];
+    $user_array_explode = explode(",", $user_array);
+
+    $query = mysqli_query($this->connection, "SELECT friend_array FROM users WHERE username='$user_to_check'");
+    $row = mysqli_fetch_array($query);
+    $user_to_check_array = $row['friend_array'];
+    $user_to_check_array_explode = explode(",", $user_to_check_array);
+
+    foreach($user_array_explode as $user_friend) {
+      foreach ($user_to_check_array_explode as $user_to_friend) {
+        if ($user_friend == $user_to_friend && $user_friend != "") $mutual_friends++;
+      }
+    }
+
+    return $mutual_friends;
+  }
+
 }
 
 ?>

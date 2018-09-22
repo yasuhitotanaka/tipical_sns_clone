@@ -1,12 +1,13 @@
 <?php
+  require 'settings/config.php';
 
-if(isset($_SESSION['username'])){
-  $userLoggedIn = $_SESSION['username'];
-  $user_details_query = mysqli_query($connection, "SELECT last_name, first_name, profile_picture, number_posts, number_likes FROM users WHERE username='$userLoggedIn'");
-  $row = mysqli_fetch_array($user_details_query);
-} else {
-  header("Location: register.php");
-}
+  if(isset($_SESSION['username'])){
+    $userLoggedIn = $_SESSION['username'];
+    $user_details_query = mysqli_query($connection, "SELECT last_name, first_name, profile_picture, number_posts, number_likes FROM users WHERE username='$userLoggedIn'");
+    $row = mysqli_fetch_array($user_details_query);
+  } else {
+    header("Location: register.php");
+  }
 
 ?>
 
@@ -18,10 +19,14 @@ if(isset($_SESSION['username'])){
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/jquery.Jcrop.css">
     <link rel="stylesheet" href="assets/css/style.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootbox.min.js"></script>
+    <script src="assets/js/jquery.Jcrop.js"></script>
+    <script src="assets/js/jcrop_bits.js"></script>
     <script src="assets/js/script.js"></script>
 
   </head>

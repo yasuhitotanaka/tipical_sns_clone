@@ -1,5 +1,5 @@
 <?php
-  require 'settings/config.php';
+
   include("includes/header.php");
   include("includes/classes/User.php");
   include("includes/classes/Post.php");
@@ -64,10 +64,21 @@
          ?>
       </form>
       <input type="submit" class="deep_blue" data-toggle="modal" data-target="#post_form" value="Post something">
+
+      <?php
+        if($userLoggedIn != $username) {
+          echo '<div class="profile_info_bottom">';
+          echo $logged_in_user_object->get_mutual_friends($username) . "Mutual friends";
+          echo '</div>';
+        }
+
+       ?>
+
     </div>
 
-    <div class="main_column column">
-      <?php echo $username; ?>
+    <div class="profile_main_column column">
+      <div class="posts_area"></div>
+      <img id="loading" src="assets/images/icons/loading.gif" alt="">
     </div>
 
     <!-- Modal -->
@@ -99,6 +110,54 @@
       </div>
     </div>
     <!-- Modal -->
+
+    <script>
+    var userLoggedIn = '<?php echo $userLoggedIn; ?>';
+    var profile_username = '<?php echo $username ?>';
+
+    $(document).ready(function(){
+      $('#loading').show();
+
+      $.ajax({
+        url:"includes/handlers/ajax/load_profile_posts.php",
+        type: "POST",
+        data: "page=1&userLoggedIn=" + userLoggedIn + "&profile_usernname=" + profile_username,
+        cache: false,
+
+        success: function(data) {
+          $('#loading').hide();
+          $('.posts_area').html(data);
+        }
+      });
+
+      $(window).scroll(function(){
+        var height = $('.posts_area').height();
+        var scoll_top = $(this).scrollTop();
+        var page = $('.posts_area').find('.nextPage').val();
+        var noMorePosts = $('.posts_area').find('.noMorePosts').val();
+
+        // function for final page
+        if((document.body.scrollHeight == document.body.scrollTop + window.innerHeight)
+         && noMorePosts == 'false') {
+          $('#loading').show();
+
+          var ajaxRequest = $.ajax({
+            url:"includes/handlers/ajax/load_profile_posts.php",
+            type: "POST",
+            data: "page=" + page +"&userLoggedIn=" + userLoggedIn + "&profile_usernname=" + profile_username,
+            cache: false,
+
+            success: function(response) {
+              $('.posts_area').find('.nextPage').remove();
+              $('#loading').hide();
+              $('.posts_area').append(response);
+            }
+          });
+         }
+         return false;
+      });
+    });
+  </script>
 
   </div>
 </body>
