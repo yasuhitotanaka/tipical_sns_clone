@@ -1,8 +1,5 @@
 <?php
   include("includes/header.php");
-  include("includes/classes/User.php");
-  include("includes/classes/Post.php");
-  include("includes/classes/Message.php");
 
   $message_object = new Message($connection, $userLoggedIn);
 

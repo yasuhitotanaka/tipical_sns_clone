@@ -1,7 +1,5 @@
 <?php
 include("includes/header.php");
-include("includes/classes/User.php");
-include("includes/classes/Post.php");
 
 if(isset($_POST['post'])) {
   $post = new Post($connection, $userLoggedIn);
@@ -74,6 +72,7 @@ if(isset($_POST['post'])) {
 
             success: function(response) {
               $('.posts_area').find('.nextPage').remove();
+              $('.posts_area').find('.noMorePosts').remove();
               $('#loading').hide();
               $('.posts_area').append(response);
             }

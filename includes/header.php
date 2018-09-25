@@ -1,5 +1,8 @@
 <?php
   require 'settings/config.php';
+  include("includes/classes/User.php");
+  include("includes/classes/Message.php");
+  include("includes/classes/Post.php");
 
   if(isset($_SESSION['username'])){
     $userLoggedIn = $_SESSION['username'];
@@ -36,14 +39,25 @@
         <a href="index.php">Swirlfeed!</a>
       </div>
       <nav>
-        <a href="#">
+        <?php
+          $messages = new Message($connection, $userLoggedIn);
+          $num_messages = $messages->get_unread_number();
+         ?>
+        <a href="<?php echo $userLoggedIn; ?>">
           <?php echo $row['first_name']; ?>
         </a>
         <a href="index.php">
           <i class="fa fa-home fa-lg"></i>
         </a>
-        <a href="#">
+        <a href="javascript:void(0);" onclick="getDropdownData('<?php echo $userLoggedIn; ?>', 'message')">
           <i class="fa fa-envelope fa-lg"></i>
+
+
+          <?php
+            if($num_messages > 0)
+              echo '<span class="notification_badge" id="unread_message">' . $num_messages . '</span>';
+           ?>
+
         </a>
         <a href="#">
           <i class="fa fa-bell fa-lg"></i>
@@ -58,4 +72,48 @@
           <i class="fa fa-sign-out-alt fa-lg"></i>
         </a>
       </nav>
+
+      <div class="dropdown_data_window" style="height:0px">
+        <input type="hidden" id="dropdown_data_type" value="">
+      </div>
     </div>
+
+    <script>
+    var userLoggedIn = '<?php echo $userLoggedIn; ?>';
+
+    $(document).ready(function(){
+
+      $('.dropdown_data_window').scroll(function(){
+        var inner_height = $('.dropdown_data_window').innerHeight();
+        var scroll_top = $('.dropdown_data_window').scrollTop();
+        var page = $('.dropdown_data_window').find('.nextPage_DropdownData').val();
+        var noMoreData = $('.dropdown_data_window').find('.noMore_DropdownData').val();
+
+        // function for final page
+        if((scroll_top + inner_height >= $('.dropdown_data_window')[0].scrollHeight)
+        && noMoreData == 'false') {
+          var pageName;
+          var type = $('#dropdown_data_type').val();
+
+          if(type == 'notification')
+            pageName = "load_notifications.php";
+          else if (type == 'message')
+            pageName = "load_messages.php";
+
+          var ajaxRequest = $.ajax({
+            url:"includes/handlers/ajax/" + pageName,
+            type: "POST",
+            data: "page=" + page +"&userLoggedIn=" + userLoggedIn,
+            cache: false,
+
+            success: function(response) {
+              $('.dropdown_data_window').find('.nextPage_DropdownData').remove();
+              $('.dropdown_data_window').find('.noMore_DropdownData').remove();
+              $('.dropdown_data_window').append(response);
+            }
+          });
+         }
+         return false;
+      });
+    });
+  </script>

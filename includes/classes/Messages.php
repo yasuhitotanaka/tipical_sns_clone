@@ -166,5 +166,92 @@ class Message {
     }
     return $return_string;
   }
+
+  public function get_conversations_dropdown($data, $limit) {
+
+    $page = $data['page'];
+    $userLoggedIn = $this->user_object->get_username();
+    $return_string = "";
+    $conversations = array();
+    $start = 0;
+
+    if ($page == 1) {
+      $start = 0;
+    } else {
+      $start = ($page - 1) * $limit;
+    }
+
+    $set_viewed_query = mysqli_query($this->connection, "UPDATE messages SET viewed='yes' WHERE user_to='$userLoggedIn'");
+
+    $query = mysqli_query($this->connection,
+    "SELECT user_to, user_from FROM messages
+     WHERE user_to='$userLoggedIn' OR user_from='$userLoggedIn'
+     ORDER BY id DESC");
+
+    while($row = mysqli_fetch_array($query)) {
+      $user_to_push = ($row['user_to'] != $userLoggedIn)
+       ? $row['user_to'] : $row['user_from'];
+
+       if(!in_array($user_to_push, $conversations)) {
+         array_push($conversations, $user_to_push);
+       }
+    }
+
+    $num_iterations = 0;
+    $count = 1;
+
+    foreach ($conversations as $username) {
+
+      if($num_iterations++ < $start) continue;
+      if($count > $limit) break; else $count++;
+
+      $is_unread_query = mysqli_query($this->connection,
+        "SELECT opened FROM messages WHERE user_to='$userLoggedIn' AND user_from='$username' ORDER BY id DESC");
+      $row = mysqli_fetch_array($is_unread_query);
+      $style = ($row['opened'] == 'no') ? "background-color: #ddedff;" : "";
+
+      $user_found_object = new User($this->connection, $username);
+      $latest_message_details = $this->get_latest_message($userLoggedIn, $username);
+
+      $dots = (strlen($latest_message_details[1]) >= 12) ? "..." : "";
+      $split = str_split($latest_message_details[1], 12);
+      $split = $split[0] . $dots;
+
+      $return_string .= "<a href='messages.php?u=$username'>
+                          <div class='user_found_messages' style='" . $style ."'>
+                            <img src='" . $user_found_object->get_profile_picture() . "'>
+                            " . $user_found_object->get_first_and_lastname() . "
+                            <span class='timestamp_smaller' id='grey'>
+                            " . $latest_message_details[2] ."
+                            </span>
+                            <p id='grey'>
+                            " . $latest_message_details[0] . $split . "
+                            </p>
+                          </div>
+                        </a>";
+    }
+
+    // If posts were loaded
+    if($count > $limit) {
+      $return_string .=
+        "<input type='hidden' class='nextPage_DropdownData' value=''"
+         . ($page + 1) .
+         "'><input type='hidden' class='noMore_DropdownData' value='false'>";
+    }
+    else{
+      $return_string .=
+       "<input type='hidden' class='nextPage_DropdownData' value='true'>
+          <p style='text-align: center;'>No more messages to load!</p>";
+    }
+
+    return $return_string;
+  }
+
+  public function get_unread_number() {
+    $userLoggedIn = $this->user_object->get_username();
+    $query = mysqli_query($this->connection, "SELECT * FROM messages WHERE viewed='no' AND user_to='$userLoggedIn'");
+    return mysqli_num_rows($query);
+  }
+
 }
 ?>

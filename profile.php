@@ -1,9 +1,8 @@
 <?php
 
   include("includes/header.php");
-  include("includes/classes/User.php");
-  include("includes/classes/Post.php");
-  include("includes/classes/Message.php");
+
+  $message_object = new Message($connection, $userLoggedIn);
 
   if(isset($_GET['profile_username'])) {
     $username = $_GET['profile_username'];
@@ -25,6 +24,21 @@
 
   if(isset($_POST['respond_request'])) {
     header("Location: requests.php");
+  }
+
+  if(isset($_POST['post_message'])) {
+    if(isset($_POST['message_body'])) {
+      $body = mysqli_real_escape_string($connection, $_POST['message_body']);
+      $date = date("Y-m-d H:i:s");
+      $message_object->send_message($username, $body, $date);
+    }
+
+    $link = '#profile_tabs a[href="#messages_div"]';
+    echo "<script>
+            $(function() {
+              $(['" . $link . "']).tab('show');
+            });
+          </script>";
   }
 
 ?>
@@ -100,6 +114,8 @@
       <div class="tab-content">
 
         <div role="tabpanel" class="tab-pane fade in active" id="newsfeed_div">
+          <div class="posts_area"></div>
+          <img id="loading" src="assets/images/icons/loading.gif" alt="">
         </div>
 
         <div role="tabpanel" class="tab-pane fade in active" id="about_div">
@@ -107,7 +123,6 @@
 
         <div role="tabpanel" class="tab-pane fade in active" id="messages_div">
           <?php
-              $message_object = new Message($connection, $userLoggedIn);
               echo "<h4>You and <a href='" . $username . "'>"
                . $profile_user_object->get_first_and_lastname() .
                "</a></h4>

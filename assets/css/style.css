@@ -456,3 +456,33 @@ textarea:focus {
   margin-left: 10px;
   font-size: 12px;
 }
+
+.dropdown_data_window {
+  padding: 0px;
+  height: 0px;
+  background-color: #fff;
+  width: 300px;
+  /* border: 1px solid #dadada; */
+  border-radius: 0 0 8px 8px;
+  border-top: none;
+  position: absolute;
+  right: 10px;
+  top: 40px;
+  overflow-y: scroll;
+}
+
+#unread_message {
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #f00;
+  vertical-align: baseline;
+  border-radius: 10px;
+  position: absolute;
+  left: 7px;
+  top: -7px;
+}
