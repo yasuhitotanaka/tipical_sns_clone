@@ -21,9 +21,17 @@ class Post {
         $user_to = "none";
       }
 
+      // Insert post
       $query = mysqli_query($this->connection, "INSERT INTO posts VALUES ('', '$body', '$added_by', '$user_to', '$date_added', 'no', 'no', '0') ");
       $returned_id = mysqli_insert_id($this->connection);
 
+      // Inser notification
+      if ($user_to != 'none') {
+          $notification = new Notification($this->connection, $added_by);
+          $notification->insert_notification($returned_id, $user_to, "profile_post");
+      }
+
+      // Update post conut for user
       $number_posts = $this->user->get_number_post();
       $number_posts++;
       $update_query = mysqli_query($this->connection, "UPDATE users SET number_posts='$number_posts' WHERE username='$added_by'");
@@ -112,6 +120,7 @@ class Post {
           $comments_check = mysqli_query($this->connection, "SELECT * FROM comments WHERE post_id='$id'");
           $comments_check_num = mysqli_num_rows($comments_check);
 
+          // Timeframe
           $date_time_now = date("Y-m-d H:i:s");
           $start_date = new DateTime($row['date_added']);
           $end_date =  new DateTime($date_time_now);
