@@ -7,8 +7,8 @@
 
   if(isset($_SESSION['username'])){
     $userLoggedIn = $_SESSION['username'];
-    $user_details_query = mysqli_query($connection, "SELECT last_name, first_name, profile_picture, number_posts, number_likes FROM users WHERE username='$userLoggedIn'");
-    $row = mysqli_fetch_array($user_details_query);
+    $user_details_query = mysqli_query($connection, "SELECT * FROM users WHERE username='$userLoggedIn'");
+    $user = mysqli_fetch_array($user_details_query);
   } else {
     header("Location: register.php");
   }
@@ -39,6 +39,23 @@
       <div class="logo">
         <a href="index.php">Swirlfeed!</a>
       </div>
+
+      <div class="search">
+        <form action="search.php" method="GET" name="search_form">
+          <input type="text" onkeyup="getLiveSearchUsers(this.value, '<?php echo $userLoggedIn; ?>')"
+           name="q" placeholder="Search..." autocomplete="off" id="search_text_input">
+           <div class="button_holder">
+            <img src="assets\images\icons\magnifying_glass.png" alt="">
+           </div>
+        </form>
+
+        <div class="search_results">
+
+        </div>
+        <div class="search_results_footer_empty">
+
+        </div>
+      </div>
       <nav>
         <?php
           $messages = new Message($connection, $userLoggedIn);
@@ -51,7 +68,7 @@
           $num_requests = $user_object->get_number_of_friend_requests();
          ?>
         <a href="<?php echo $userLoggedIn; ?>">
-          <?php echo $row['first_name']; ?>
+          <?php echo $user['first_name']; ?>
         </a>
         <a href="index.php">
           <i class="fa fa-home fa-lg"></i>
