@@ -471,7 +471,7 @@ textarea:focus {
   overflow-y: scroll;
 }
 
-#unread_message {
+.notification_badge {
   padding: 3px 7px;
   font-size: 12px;
   font-weight: 700;
@@ -485,4 +485,22 @@ textarea:focus {
   position: absolute;
   left: 7px;
   top: -7px;
+}
+
+.result_display_notification {
+  height: auto;
+  color: #14858d;
+  padding-bottom: 7px;
+}
+
+.notifications_profile_picture img {
+  height: 40px;
+  border-radius: 5px;
+  margin: 1px 12px 0px 2px;
+  float: left;
+}
+
+.timestamp_smaller {
+  font-size: 85%;
+  margin: 0;
 }

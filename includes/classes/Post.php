@@ -219,11 +219,11 @@ class Post {
                     <p>No more posts to show!</p>";
 
         }
-      echo $str;
       }
+      echo $str;
     }
 
-    public function load_profile_posts($data, $limit) {
+  public function load_profile_posts($data, $limit) {
 
       $page = $data['page'];
       $profile_user = $data['profile_usernname'];
@@ -393,9 +393,185 @@ class Post {
                       <p>No more posts to show!</p>";
 
           }
-        echo $str;
         }
+        echo $str;
       }
 
-  }
+  public function get_signle_post($post_id){
+    $userLoggedIn = $this->user->get_username();
+    $opened_query = mysqli_query($this->connection,
+      "UPDATE notifications SET opened='yes' WHERE user_to='$userLoggedIn' AND link LIKE '%=$post_id'");
+
+    $str = "";
+    $data_query = mysqli_query($this->connection,
+      "SELECT * FROM posts WHERE deleted='no' AND id='$post_id'");
+
+    if(mysqli_num_rows($data_query) > 0) {
+
+      $row = mysqli_fetch_array($data_query);
+      $id = $row['id'];
+      $added_by = $row['added_by'];
+      $body = $row['body'];
+      $user_to = $row['user_to'];
+
+      if($row['user_to'] == "none") {
+        $user_to = "";
+      } else {
+        $user_to_object = new User($this->connection, $user_to);
+        $user_to_name = $user_to_object->get_first_and_lastname();
+        $user_to = "to <a href='" . $user_to . "'>" . $user_to_name . "</a>";
+      }
+
+      $added_by_object = new User($this->connection, $row['added_by']);
+      if ($added_by_object->is_closed()) return;
+
+      $user_logged_object = new User($this->connection, $userLoggedIn);
+      if($user_logged_object->is_friend($added_by)) {
+
+        if ($userLoggedIn == $added_by) {
+          $delete_button =
+            "<buttton class='delete_button btn-danger' id='post$id'>X</button>";
+        } else {
+          $delete_button = "";
+        }
+
+        $user_details_query = mysqli_query($this->connection, "SELECT first_name, last_name, profile_picture FROM users WHERE username='$added_by'");
+        $user_row = mysqli_fetch_array($user_details_query);
+        $first_name = $user_row['first_name'];
+        $last_name = $user_row['last_name'];
+        $profile_picture = $user_row['profile_picture'];
+        ?>
+
+        <script>
+          // load css in each iframes
+          $('iframe').on('load', function() {
+            $('iframe').contents().find("head")
+            .append('<link rel="stylesheet" href="assets/css/style.css">');
+          });
+
+          function toggle<?php echo $id; ?>() {
+            let target = $(event.target);
+
+            if(!target.is("a")) {
+              let element = document.getElementById("toggleComment<?php echo $id; ?>");
+
+              if(element.style.display == "block") {
+                element.style.display = "none";
+              } else {
+                element.style.display = "block";
+              }
+            }
+          }
+        </script>
+
+        <?php
+
+        $comments_check = mysqli_query($this->connection, "SELECT * FROM comments WHERE post_id='$id'");
+        $comments_check_num = mysqli_num_rows($comments_check);
+
+        // Timeframe
+        $date_time_now = date("Y-m-d H:i:s");
+        $start_date = new DateTime($row['date_added']);
+        $end_date =  new DateTime($date_time_now);
+        $interval = $start_date->diff($end_date);
+
+        if ($interval->y >= 1) {
+          if ($interval->y == 1) {
+            $time_message = $interval->y . " year ago";
+          } else {
+            $time_message = $interval->y . " years ago";
+          }
+        } else if ($interval->m >= 1) {
+          if($interval->d == 0) {
+            $days = " ago";
+          } else if ($interval->d == 1) {
+            $days = $interval->d . "day ago";
+          } else {
+            $days = $interval->d . "days ago";
+          }
+          if ($interval->m == 1) {
+            $time_message = $interval->m . " month" . $days;
+          } else {
+            $time_message = $interval->m . " months" . $days;
+          }
+        } else if ($interval->d >= 1) {
+          if ($interval->d == 1) {
+            $time_message = "Yesterday";
+          } else {
+            $time_message = $interval->d . "days ago";
+          }
+        } else if ($interval->h >= 1) {
+          if ($interval->h == 1) {
+            $time_message = $interval->h . "hour ago";
+          } else {
+            $time_message = $interval->h . "hours ago";
+          }
+        } else if ($interval->i >= 1) {
+          if ($interval->i == 1) {
+            $time_message = $interval->i . "minute ago";
+          } else {
+            $time_message = $interval->i . "minutes ago";
+          }
+       } else {
+        if ($interval->s < 30) {
+          $time_message = "Just now";
+        } else {
+          $time_message = $interval->s . "seconds ago";
+        }
+      }
+      $str .= "<div class='status_post' onClick='javascript:toggle$id()'>
+                <div class='post_profile_pic'>
+                  <img src='$profile_picture' width=50>
+                </div>
+                <div class='posted_by'>
+                  <a href='$added_by'> $first_name $last_name </a> $user_to &nbsp;&nbsp;&nbsp;&nbsp;
+                  $time_message
+                  $delete_button
+                </div>
+                <div id='post_body'>
+                  $body
+                  <br>
+                  <br>
+                  <br>
+                </div>
+
+                <div class='newsfeedPostOptions'>
+                  Comments($comments_check_num)&nbsp;&nbsp;&nbsp;
+                  <iframe src='like.php?post_id=$id' scrolling='no'></iframe>
+                </div>
+
+              </div>
+              <div class='post_comment' id='toggleComment$id'>
+                <iframe src='comment_frame.php?post_id=$id' id='comment_iframe'></iframe>
+              </div>
+              <hr>";
+      ?>
+      <script>
+        $(document).ready(function(){
+          $('#post<?php echo $id; ?>').on('click', function(){
+            bootbox.confirm("Are you sure you want to delete this post?", function(result){
+              $.post("includes/form_handlers/delete_post.php?post_id=<?php echo $id; ?>", {result: result});
+              if (result) location.reload();
+            })
+          });
+        });
+      </script>
+
+    <?php
+        } else {
+          echo "You cannot see this post bacause you are not friends with this user";
+          return;
+        }
+      }  else {
+        echo "No post found. If you clicked a link, it may be broken.";
+        return;
+      }
+      echo $str;
+    }
+
+
+
+
+}
+
 ?>

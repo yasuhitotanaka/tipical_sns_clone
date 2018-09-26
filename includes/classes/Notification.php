@@ -108,8 +108,10 @@ class Notification {
       $style = ($row['opened'] == 'no') ? "background-color: #ddedff;" : "";
 
       $return_string .= "<a href='" . $row['link'] ."'>
-                          <div class='notifications_profile_picture'>
-                            <img src='" . $user_data['profile_picture'] . "'>
+                          <div class='result_display result_display_notification' style='" . $style . "'>
+                            <div class='notifications_profile_picture'>
+                              <img src='" . $user_data['profile_picture'] . "'>
+                            </div>
                           </div>
                           <p class='timestamp_smaller' id='grey'>" . $time_message ." </p>
                           " . $row['message'] ."

@@ -46,6 +46,9 @@
 
           $notifications = new Notification($connection, $userLoggedIn);
           $num_notifications = $notifications->get_unread_number();
+
+          $user_object = new User($connection, $userLoggedIn);
+          $num_requests = $user_object->get_number_of_friend_requests();
          ?>
         <a href="<?php echo $userLoggedIn; ?>">
           <?php echo $row['first_name']; ?>
@@ -69,6 +72,10 @@
         </a>
         <a href="requests.php">
           <i class="fa fa-users fa-lg"></i>
+          <?php
+            if($num_requests > 0)
+              echo '<span class="notification_badge" id="unread_request">' . $num_requests . '</span>';
+           ?>
         </a>
         <a href="#">
           <i class="fa fa-cog fa-lg"></i>
