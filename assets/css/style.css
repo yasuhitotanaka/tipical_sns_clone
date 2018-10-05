@@ -574,3 +574,10 @@ textarea:focus {
 .search_hr {
   margin-bottom: 0px;
 }
+
+.search_page_friend_buttons input[type="submit"] {
+  border: none;
+  padding: 7px 12px;
+  border-radius: 5px;
+  color: #fff;
+}

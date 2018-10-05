@@ -10,17 +10,17 @@ if(isset($_POST['post'])) {
 <div class="wrapper">
   <div class="user_details column">
     <a href="<?php echo $userLoggedIn; ?>">
-      <img src="<?php echo $row['profile_picture']; ?>" alt="">
+      <img src="<?php echo $user['profile_picture']; ?>" alt="">
     </a>
 
     <div class="user_details_left_right">
       <a href="<?php echo $userLoggedIn; ?>">
-        <?php echo $row['first_name'] . " " . $row['last_name']; ?>
+        <?php echo $user['first_name'] . " " . $user['last_name']; ?>
       </a>
       <br>
       <?php
-        echo "Posts: " . $row['number_posts']
-        . "<br>" . "Likes: " . $row['number_likes']
+        echo "Posts: " . $user['number_posts']
+        . "<br>" . "Likes: " . $user['number_likes']
        ?>
     </div>
   </div>

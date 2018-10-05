@@ -67,14 +67,24 @@
               $button = "<input type='submit' name='" . $row['username'] . "' class='danger' value='Remove Friend'>";
             } else if ($user_object->is_received_request($row['username'])) {
               $button = "<input type='submit' name='" . $row['username'] . "' class='warning' value='Respond to request'>";
-            } else if ($user_object->is_sent_request()) {
-              $button = "<input class='default' value='Resquest Sent'>";
+            } else if ($user_object->is_sent_request($row['username'])) {
+              $button = "<input type='submit' class='default' value='Resquest Sent'>";
             } else {
               $button = "<input type='submit' name='" . $row['username'] . "' class='success' value='Add Friend'>";
             }
             $mutual_friends = $user_object->get_mutual_friends($row['username']) . " friends in common";
 
             // Button forms
+            if(isset($_POST[$row['username']])) {
+              if ($user_object->is_friend($row['username'])) {
+                $user_object->remove_friend($row['username']);
+                header("Location: http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+              } else if ($user_object->is_received_request($row['username'])) {
+                header("Location: requests.php");
+              } else if ($user_object->is_sent_request($row['username'])) {
+                header("Location: http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+              }
+            }
           }
           echo "<div class='search_result'>
                   <div class='search_page_friend_buttons'>
