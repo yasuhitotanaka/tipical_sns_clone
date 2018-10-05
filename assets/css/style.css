@@ -581,3 +581,27 @@ textarea:focus {
   border-radius: 5px;
   color: #fff;
 }
+
+#small_profile_picture {
+  height: 55px;
+  margin: 1px 12px 0 2px;
+  float: left;
+}
+
+.setting_input {
+  border: 1px solid #ccc;
+  height: 20px;
+  padding: 4px 6px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  line-height: 20px;
+  font-size: 14px;
+  width: 200px;
+}
+
+.settings_submit {
+  border: none;
+  padding: 7px 12px;
+  border-radius: 5px;
+  color: #fff;
+}
