@@ -2,8 +2,48 @@
 include("includes/header.php");
 
 if(isset($_POST['post'])) {
-  $post = new Post($connection, $userLoggedIn);
-  $post->submit_post($_POST['post_text'], 'none');
+
+  $uploadOK = 1;
+  $image_name = $_FILES['file_to_upload']['name'];
+  $error_message = "";
+
+  if ($image_name != "") {
+    $target_directory = "assets/images/posts/";
+    $image_name = $target_directory . uniqid() . basename($image_name);
+    $image_file_type = pathinfo($image_name, PATHINFO_EXTENSION);
+
+    if ($_FILES['file_to_upload']['size'] > 10000000) {
+      $error_message = "Sorry your file is too large";
+      $uploadOK = 0;
+    }
+
+    if(
+      strtolower($image_file_type) != "jpeg" &&
+      strtolower($image_file_type) != "jpg" &&
+      strtolower($image_file_type) != "png"
+    ) {
+      $error_message = "Sorry, only jpeg, jpg, png files are allowed";
+      $uploadOK = 0;
+    }
+
+    if ($uploadOK) {
+      if (move_uploaded_file($_FILES['file_to_upload']['tmp_name'], $image_name)) {
+
+      } else {
+        $uploadOK = 0;
+      }
+    }
+  }
+
+  if ($uploadOK) {
+    $post = new Post($connection, $userLoggedIn);
+    $post->submit_post($_POST['post_text'], 'none', $image_name);
+  } else {
+    echo "<div style='text-align:center;' class='alert alert-error'>
+            $error_message;
+          </div>";
+  }
+
 }
 
 ?>
@@ -26,7 +66,8 @@ if(isset($_POST['post'])) {
   </div>
 
   <div class="main_column column">
-    <form class="post_form" action="index.php" method="POST">
+    <form class="post_form" action="index.php" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file_to_upload" id="file_to_upload" value="upload">
       <textarea name="post_text" id="post_text" placeholder="Got something to say?"></textarea>
       <input type="submit" name="post" id="post_button" value="Post">
     </form>
@@ -35,6 +76,26 @@ if(isset($_POST['post'])) {
     <img id="loading" src="assets/images/icons/loading.gif" alt="">
   </div>
 
+  <div class="user_details column">
+    <div class="trends">
+      <?php
+        $query = mysqli_query($connection, "SELECT * FROM trends ORDER BY hits DESC LIMIT 9");
+
+        foreach ($query as $row) {
+          $word = $row['title'];
+          $word_dot = strlen($word) >= 14 ? "..." : "";
+
+          $trimed_word = str_split($word, 14);
+          $trimed_word = $trimed_word[0];
+
+          echo "<div style='padding: 1px'>";
+          echo $trimed_word . $word_dot;
+          echo "<br></div>";
+
+        }
+       ?>
+    </div>
+  </div>
     <script>
     var userLoggedIn = '<?php echo $userLoggedIn; ?>';
 

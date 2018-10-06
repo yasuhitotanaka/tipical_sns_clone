@@ -605,3 +605,10 @@ textarea:focus {
   border-radius: 5px;
   color: #fff;
 }
+
+.posted_image img {
+  max-height: 250px;
+  max-width: 100%;
+  display: block;
+  margin: 5px;
+}
